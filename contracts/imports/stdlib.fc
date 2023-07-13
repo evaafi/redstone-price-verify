@@ -102,7 +102,9 @@ forall X -> X null() asm "PUSHNULL";
 ;;; Moves a variable [x] to the top of the stack
 forall X -> (X, ()) ~impure_touch(X x) impure asm "NOP";
 
+(int, int, int, int) check_sig (int hash, int v, int r, int s) asm "ECRECOVER" "NULLSWAPIFNOT" "NULLSWAPIFNOT2";
 
+int keccak(slice s, slice s1, int h) asm "HASHEXT_KECCAK256";
 
 ;;; Returns the current Unix time as an Integer
 int now() asm "NOW";
@@ -338,6 +340,10 @@ cell preload_dict(slice s) asm "PLDDICT";
 ;;; Loads a dictionary as [load_dict], but returns only the remainder of the slice.
 slice skip_dict(slice s) asm "SKIPDICT";
 
+
+slice bls_g1_negate(slice x) asm "BLS_G1_NEG";
+slice bls_g1_mul(slice x, int s) asm "BLS_G1_MUL";
+slice bls_g1_add(slice x, slice y) asm "BLS_G1_ADD";
 ;;; Loads (Maybe ^Cell) from `slice` [s].
 ;;; In other words loads 1 bit and if it is true
 ;;; loads first ref and return it with slice remainder

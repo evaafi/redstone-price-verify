@@ -7,7 +7,7 @@ export function testConfigToCell(config: TestConfig): Cell {
 }
 
 export class Test implements Contract {
-    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) {}
+    constructor(readonly address: Address, readonly init?: { code: Cell; data: Cell }) { }
 
     static createFromAddress(address: Address) {
         return new Test(address);
@@ -25,5 +25,17 @@ export class Test implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
+    }
+
+    async getCheck(provider: ContractProvider, h: any, hh: any, v: bigint, r: any, s: any) {
+        const result = await provider.get('check', [
+            { type: 'slice', cell: h },
+            { type: 'slice', cell: hh },
+            // { type: 'int', value: v },
+            { type: 'slice', cell: r },
+            // { type: 'slice', cell: s }
+        ]);
+        return result;
+
     }
 }

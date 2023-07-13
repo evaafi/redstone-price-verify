@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "@ton-community/blueprint": "^0.10.0",
-        "@ton-community/sandbox": "^0.11.0",
+        "@ton-community/sandbox": "0.12.0-tvmbeta.1",
         "@ton-community/test-utils": "^0.2.0",
         "@types/jest": "^29.5.0",
         "@types/node": "^20.2.5",
@@ -23,8 +23,16 @@
     },
     "dependencies": {
         "@metamask/eth-sig-util": "^6.0.0",
+        "@ton-community/func-js": "0.6.3-tvmbeta.1",
+        "@ton-community/func-js-bin": "0.4.5-tvmbeta.1",
+        "bigint-buffer": "^1.1.5",
         "ethereumjs-util": "7.0.10",
         "ethers": "5.6.9",
+        "hex-to-array-buffer": "^2.0.0",
         "sort-deep-object-arrays": "^1.1.2"
+    },
+    "resolutions": {
+        "@ton-community/func-js-bin": "0.4.5-tvmbeta.1",
+        "@ton-community/func-js": "0.6.3-tvmbeta.1"
     }
 }

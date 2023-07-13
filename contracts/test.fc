@@ -1,5 +1,29 @@
 #include "imports/stdlib.fc";
 
 () recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+}
 
+(cell) check (slice h, slice hh, slice r) method_id {
+  ;;slice test = begin_cell().store_slice(h.skip_bits(0)).end_cell().begin_parse();
+  ;;slice tes1t = begin_cell().store_slice(hh.skip_bits(0)).end_cell().begin_parse();
+  ;;~dump(test.begin_parse());
+  ;;~dump(tes1t.begin_parse());
+  ;;~dump(h);
+  ;;~dump(hh);
+  ;;~dump(keccak(h, hh, 2));
+  int v = r~load_uint(8);
+  int rr = r~load_uint(256);
+  int cc = r~load_uint(256);
+  ~dump(v);
+  ~dump(rr);
+  ~dump(cc);
+  int res = keccak(h, hh, 2);
+  ~dump(res);
+  var (i, ii, iii, iiii) = check_sig(res, v, rr, cc);
+  ~dump(i);
+  ~dump(ii);
+  ~dump(iii);
+  ~dump(iiii);
+  return begin_cell().store_uint(i, 8).store_uint(ii, 256).store_uint(iii, 256).end_cell();
+  ;; return (keccak(h, hh, 2), 0, 0, 0);
 }
