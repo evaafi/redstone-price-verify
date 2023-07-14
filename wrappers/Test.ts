@@ -27,13 +27,11 @@ export class Test implements Contract {
         });
     }
 
-    async getCheck(provider: ContractProvider, h: any, hh: any, v: bigint, r: any, s: any) {
+    async getCheck(provider: ContractProvider, data: any, data_pt2: any, sig: any) {
         const result = await provider.get('check', [
-            { type: 'slice', cell: h },
-            { type: 'slice', cell: hh },
-            // { type: 'int', value: v },
-            { type: 'slice', cell: r },
-            // { type: 'slice', cell: s }
+            { type: 'slice', cell: data },
+            { type: 'slice', cell: data_pt2 },
+            { type: 'slice', cell: sig },
         ]);
         return result;
 
