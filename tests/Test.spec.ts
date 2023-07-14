@@ -138,9 +138,8 @@ describe('Test', () => {
             data: formatedRawData,
             signature: price.liteEvmSignature,
         });
-        console.log(signerAddressJs)
-        console.log(signerPKJs)
-        console.log((signerPkFromSC.cell.bits.subbuffer(0, 520)).length)
-        console.log((signerPkFromSC.cell.bits.subbuffer(0, 520)).toString('hex'))
+        console.log('js signer address: ', signerAddressJs)
+        console.log('js signer pk: ', signerPKJs)
+        console.log('func signer pk: ', (signerPkFromSC.cell.bits.subbuffer(0, 520)).toString('hex'))
     });
 });
