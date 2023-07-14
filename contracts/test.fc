@@ -12,10 +12,20 @@
   ~dump(s);
   int hash_of_raw_data = keccak(data, data_pt2, 2);
   ~dump(hash_of_raw_data);
-  var (h, x1, x2, bool) = check_sig(hash_of_raw_data, v, r, s);
-  ~dump(h);
-  ~dump(x1);
-  ~dump(x2);
-  ~dump(bool);
-  return begin_cell().store_uint(h, 8).store_uint(x1, 256).store_uint(x2, 256).end_cell();
+  int i = 0;
+  var res = begin_cell().end_cell(); 
+  while (i < 256){
+    var (h, x1, x2, bool) = check_sig(hash_of_raw_data, i, r, s);
+    if (bool == -1){
+      ~dump(h);
+      ~dump(x1);
+      ~dump(x2);
+      ~dump(bool);
+      ~dump(i);
+      i = 256;
+      res = begin_cell().store_uint(h, 8).store_uint(x1, 256).store_uint(x2, 256).end_cell();
+    }
+    i += 1;
+  }
+  return res;
 }

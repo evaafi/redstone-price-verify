@@ -128,7 +128,7 @@ describe('Test', () => {
             beginCell().storeBuffer(rawDataBuffer.slice(0, 127)).endCell(),
             beginCell().storeBuffer(rawDataBuffer.slice(127)).endCell(),
             beginCell().storeBuffer(signature).endCell());
-        console.log(scresult.logs)
+        console.log(scresult.logs?.split("\n").filter((e: any) => e.includes('DEBUG')))
         const signerPkFromSC = scresult.stack.pop() as any
         const signerPKJs = extractPublicKey({
             data: formatedRawData,
@@ -140,6 +140,10 @@ describe('Test', () => {
         });
         console.log('js signer address: ', signerAddressJs)
         console.log('js signer pk: ', signerPKJs)
-        console.log('func signer pk: ', (signerPkFromSC.cell.bits.subbuffer(0, 520)).toString('hex'))
+        if (signerPkFromSC.cell.bits.length > 0) {
+            console.log('func signer pk: ', (signerPkFromSC.cell.bits.subbuffer(0, 520)).toString('hex'))
+        } else {
+            console.log('no pk from fc')
+        }
     });
 });
