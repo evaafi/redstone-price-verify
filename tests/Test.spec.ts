@@ -6,17 +6,18 @@ import { compile } from '@ton-community/blueprint';
 import { ethers } from "ethers";
 import { toBuffer, keccak256 } from "ethereumjs-util";
 import { extractPublicKey, recoverPersonalSignature } from "@metamask/eth-sig-util";
-import { bufferToBigInt, fromRpcSig } from '@ethereumjs/util';
 //@ts-ignore
 import sortDeepObjectArrays from "sort-deep-object-arrays";
 
-const wallet = new ethers.Wallet("0x84a27edc202f1d943fb8425e2739627cb6983da1dcb9147a263a27304c4b7f0f")
-console.log('address:', wallet.address)
-// console.log('mnemonic:', wallet.mnemonic.phrase)
-console.log('privateKey:', wallet.privateKey)
-console.log('publicKey:', wallet.publicKey)
-
 const sortDeepObjects = <T>(arr: T[]): T[] => sortDeepObjectArrays(arr);
+
+const hashPersonalMessage = function(message: Buffer): Buffer {
+    const prefix = Buffer.from(
+        `\u0019Ethereum Signed Message:\n${message.length.toString()}`,
+        'utf-8'
+    )
+    return (Buffer.concat([prefix, message]))
+}
 
 function hexToArrayBuffer(input: any) {
     if (typeof input !== 'string') {
@@ -78,7 +79,7 @@ const getLiteDataBytesString = (priceData: any): string => {
 
 const getLiteDataToSign = (priceData: any) => {
     const data = getLiteDataBytesString(priceData);
-    return bufferToBigInt(keccak256(toBuffer("0x" + data)));
+    return (keccak256(toBuffer("0x" + data)));
 }
 
 describe('Test', () => {
@@ -120,23 +121,12 @@ describe('Test', () => {
         console.log(price)
         console.log('-- raw data')
         const formatedRawData = getLiteDataToSign(serializedPriceData);
-        const dataDaw = getLiteDataBytesString(serializedPriceData);
-        const { v, r, s } = fromRpcSig(price.liteEvmSignature)
         const signature = hexToArrayBuffer(price.liteEvmSignature)
-        const rawDataBuffer = toBuffer('0x' + dataDaw)
-        console.log('-- signature by parts')
-        console.log(dataDaw)
-        console.log(v)
-        console.log(bufferToBigInt(r))
-        console.log(bufferToBigInt(s))
-        console.log('-- signature by parts')
-        console.log(formatedRawData, 'js keccak hashed data')
-        const sigjs = await wallet.signMessage(rawDataBuffer)
-        console.log(sigjs)
+        const rawDataBuffer = Buffer.from(ethers.utils.arrayify(formatedRawData))
         const scresult = await test.getCheck(
-            beginCell().storeBuffer(rawDataBuffer.slice(0, 127)).endCell(),
-            beginCell().storeBuffer(rawDataBuffer.slice(127)).endCell(),
-            beginCell().storeBuffer(hexToArrayBuffer(sigjs)).endCell());
+            beginCell().storeBuffer(hashPersonalMessage(rawDataBuffer).slice(0, 127)).endCell(),
+            beginCell().storeBuffer(hashPersonalMessage(rawDataBuffer).slice(127)).endCell(),
+            beginCell().storeBuffer((signature)).endCell());
         console.log(scresult.logs?.split("\n").filter((e: any) => e.includes('DEBUG')))
         const signerPkFromSC = scresult.stack.pop() as any
         const signerPKJs = extractPublicKey({
