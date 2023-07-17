@@ -20,7 +20,6 @@
       ~dump(h);
       ~dump(x1);
       ~dump(x2);
-      ~dump(bool);
       ~dump(i);
       i = 256;
       res = begin_cell().store_uint(h, 8).store_uint(x1, 256).store_uint(x2, 256).end_cell();

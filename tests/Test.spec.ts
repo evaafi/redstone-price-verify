@@ -10,6 +10,12 @@ import { bufferToBigInt, fromRpcSig } from '@ethereumjs/util';
 //@ts-ignore
 import sortDeepObjectArrays from "sort-deep-object-arrays";
 
+const wallet = new ethers.Wallet("0x84a27edc202f1d943fb8425e2739627cb6983da1dcb9147a263a27304c4b7f0f")
+console.log('address:', wallet.address)
+// console.log('mnemonic:', wallet.mnemonic.phrase)
+console.log('privateKey:', wallet.privateKey)
+console.log('publicKey:', wallet.publicKey)
+
 const sortDeepObjects = <T>(arr: T[]): T[] => sortDeepObjectArrays(arr);
 
 function hexToArrayBuffer(input: any) {
@@ -119,15 +125,18 @@ describe('Test', () => {
         const signature = hexToArrayBuffer(price.liteEvmSignature)
         const rawDataBuffer = toBuffer('0x' + dataDaw)
         console.log('-- signature by parts')
+        console.log(dataDaw)
         console.log(v)
         console.log(bufferToBigInt(r))
         console.log(bufferToBigInt(s))
         console.log('-- signature by parts')
         console.log(formatedRawData, 'js keccak hashed data')
+        const sigjs = await wallet.signMessage(rawDataBuffer)
+        console.log(sigjs)
         const scresult = await test.getCheck(
             beginCell().storeBuffer(rawDataBuffer.slice(0, 127)).endCell(),
             beginCell().storeBuffer(rawDataBuffer.slice(127)).endCell(),
-            beginCell().storeBuffer(signature).endCell());
+            beginCell().storeBuffer(hexToArrayBuffer(sigjs)).endCell());
         console.log(scresult.logs?.split("\n").filter((e: any) => e.includes('DEBUG')))
         const signerPkFromSC = scresult.stack.pop() as any
         const signerPKJs = extractPublicKey({
